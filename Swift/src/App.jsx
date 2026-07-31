@@ -74,6 +74,14 @@ const AppRoutes = () => (
       }
     />
     <Route
+      path="/"
+      element={
+        <PublicRoute>
+          <SignupPage />
+        </PublicRoute>
+      }
+    />
+    <Route
       path="/*"
       element={
         <ProtectedRoute>

@@ -40,12 +40,6 @@ export const LoginPage = () => {
     }
   };
 
-  const demoAccounts = [
-    { role: 'End User', email: 'alice@swift.com' },
-    { role: 'IT Support', email: 'bob@swift.com' },
-    { role: 'Manager', email: 'carol@swift.com' },
-  ];
-
   return (
     <div className="auth-page">
       <div className="auth-brand-panel">
@@ -56,35 +50,37 @@ export const LoginPage = () => {
 
           <h1 className="auth-brand-title">Swift</h1>
           <p className="auth-brand-tagline">
-            Sign in to your Swift workspace and manage tickets with your team.
+            The IT support platform your team actually uses. Faster resolution, zero friction.
           </p>
 
-          <div className="auth-steps">
-            {[
-              { n: '1', title: 'Secure access', desc: 'Sign in with your work account' },
-              { n: '2', title: 'Stay organized', desc: 'Keep track of tickets and requests' },
-              { n: '3', title: 'Collaborate faster', desc: 'Connect with support and management' },
-            ].map((step) => (
-              <div key={step.n} className="auth-step">
-                <div className="auth-step-num">{step.n}</div>
-                <div>
-                  <p className="auth-step-title">{step.title}</p>
-                  <p className="auth-step-desc">{step.desc}</p>
-                </div>
-              </div>
-            ))}
+          <div className="auth-brand-features">
+            <div className="auth-brand-feature">
+              <span className="auth-brand-feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </span>
+              <span>Enterprise-grade security</span>
+            </div>
+            <div className="auth-brand-feature">
+              <span className="auth-brand-feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              <span>Real-time ticket tracking</span>
+            </div>
+            <div className="auth-brand-feature">
+              <span className="auth-brand-feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </span>
+              <span>Built for modern teams</span>
+            </div>
           </div>
         </div>
-
-        <div className="auth-blob auth-blob-1" />
-        <div className="auth-blob auth-blob-2" />
       </div>
 
       <div className="auth-form-panel">
         <div className="auth-form-card">
           <div className="auth-form-header">
-            <h2 className="auth-form-title">Welcome back</h2>
-            <p className="auth-form-subtitle">Sign in to continue to Swift.</p>
+            <h2 className="auth-form-title">Login</h2>
+            <p className="auth-form-subtitle">Enter your credentials to access your workspace.</p>
           </div>
 
           {error && (
@@ -142,31 +138,10 @@ export const LoginPage = () => {
               {loading ? (
                 <><Loader2 size={18} className="auth-spin" /> Signing in…</>
               ) : (
-                <>Sign in <ArrowRight size={18} /></>
+                <>Login <ArrowRight size={18} /></>
               )}
             </button>
           </form>
-
-          <div className="auth-demo-hint">
-            <p className="auth-demo-title">Demo accounts</p>
-            <div className="auth-demo-accounts">
-              {demoAccounts.map((account) => (
-                <button
-                  key={account.email}
-                  type="button"
-                  className="auth-demo-chip"
-                  onClick={() => {
-                    setForm({ email: account.email, password: 'password' });
-                    setError('');
-                    setSubmitted(false);
-                  }}
-                >
-                  <span className="auth-demo-role">{account.role}</span>
-                  <span className="auth-demo-email">{account.email}</span>
-                </button>
-              ))}
-            </div>
-          </div>
 
           <p className="auth-switch">
             Don’t have an account?{' '}
@@ -177,4 +152,3 @@ export const LoginPage = () => {
     </div>
   );
 };
- 

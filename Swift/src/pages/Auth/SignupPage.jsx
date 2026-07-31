@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Ticket, Eye, EyeOff, ArrowRight, Loader2, Check } from 'lucide-react';
+import { Ticket, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 import './auth.css';
-
-const ROLES = [
-  { value: 'user',    label: 'End User',     desc: 'Submit and track tickets'     },
-  { value: 'support', label: 'IT Support',   desc: 'Manage and resolve tickets'   },
-  { value: 'manager', label: 'Manager',      desc: 'Reports and team oversight'   },
-];
 
 const passwordStrength = (pwd) => {
   let score = 0;
@@ -26,22 +20,52 @@ export const SignupPage = () => {
   const { signup } = useAuth();
   const navigate   = useNavigate();
 
-  const [form, setForm]       = useState({ name: '', email: '', password: '', confirm: '', role: 'user' });
+  const [form, setForm]       = useState({ name: '', email: '', password: '', confirm: '' });
   const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const strength = passwordStrength(form.password);
 
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'name':
+        return /^[A-Za-z\s]+$/.test(value) ? '' : 'Name must contain letters and spaces only.';
+      case 'email':
+        return /^[A-Za-z0-9@._-]+$/.test(value) ? '' : 'Email must contain only letters, numbers, @, ., _, and -.';
+      case 'password':
+        return /^[A-Za-z0-9!@#$%^&*()_+\-=[\]{};':",.<>/?`~@]*$/.test(value) ? '' : 'Password must contain letters, numbers, and symbols only.';
+      default:
+        return '';
+    }
+  };
+
   const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    setFieldErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
     setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const nameErr = validateField('name', form.name);
+    const emailErr = validateField('email', form.email);
+    const pwdErr = validateField('password', form.password);
+    setFieldErrors({
+      name: nameErr,
+      email: emailErr,
+      password: pwdErr,
+      confirm: form.password !== form.confirm ? 'Passwords do not match.' : '',
+    });
+
     if (!form.name || !form.email || !form.password || !form.confirm) {
       setError('Please fill in all fields.');
+      return;
+    }
+    if (nameErr || emailErr || pwdErr) {
+      setError('Please fix the errors above.');
       return;
     }
     if (form.password !== form.confirm) {
@@ -54,7 +78,7 @@ export const SignupPage = () => {
     }
     setLoading(true);
     try {
-      await signup({ name: form.name, email: form.email, password: form.password, role: form.role });
+      await signup({ name: form.name, email: form.email, password: form.password });
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -73,28 +97,31 @@ export const SignupPage = () => {
           </div>
           <h1 className="auth-brand-title">Swift</h1>
           <p className="auth-brand-tagline">
-            Join your team on Swift and experience effortless IT support management.
+            IT support infrastructure for modern organizations.
           </p>
 
-          <div className="auth-steps">
-            {[
-              { n: '1', title: 'Create your account', desc: 'Takes less than a minute' },
-              { n: '2', title: 'Choose your role',    desc: 'User, Support, or Manager' },
-              { n: '3', title: 'Start collaborating', desc: 'Manage tickets right away'  },
-            ].map(s => (
-              <div key={s.n} className="auth-step">
-                <div className="auth-step-num">{s.n}</div>
-                <div>
-                  <p className="auth-step-title">{s.title}</p>
-                  <p className="auth-step-desc">{s.desc}</p>
-                </div>
-              </div>
-            ))}
+          <div className="auth-brand-features">
+            <div className="auth-brand-feature">
+              <span className="auth-brand-feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </span>
+              <span>Enterprise-grade security</span>
+            </div>
+            <div className="auth-brand-feature">
+              <span className="auth-brand-feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </span>
+              <span>99.9% platform reliability</span>
+            </div>
+            <div className="auth-brand-feature">
+              <span className="auth-brand-feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </span>
+              <span>Cross-platform access</span>
+            </div>
           </div>
         </div>
 
-        <div className="auth-blob auth-blob-1" />
-        <div className="auth-blob auth-blob-2" />
       </div>
 
       {/* Right panel — form */}
@@ -122,43 +149,28 @@ export const SignupPage = () => {
                 placeholder="Jane Smith"
                 value={form.name}
                 onChange={handleChange}
-                className="auth-input"
+                className={`auth-input ${fieldErrors.name ? 'auth-input--error' : ''}`}
               />
+              {fieldErrors.name && (
+                <span className="auth-field-error">{fieldErrors.name}</span>
+              )}
             </div>
 
             <div className="auth-field">
-              <label htmlFor="signup-email" className="auth-label">Work email</label>
+              <label htmlFor="signup-email" className="auth-label">Email</label>
               <input
                 id="signup-email"
                 type="email"
                 name="email"
                 autoComplete="email"
-                placeholder="jane@company.com"
+                placeholder="you@example.com"
                 value={form.email}
                 onChange={handleChange}
-                className="auth-input"
+                className={`auth-input ${fieldErrors.email ? 'auth-input--error' : ''}`}
               />
-            </div>
-
-            {/* Role selector */}
-            <div className="auth-field">
-              <label className="auth-label">I am a…</label>
-              <div className="auth-role-grid">
-                {ROLES.map(r => (
-                  <button
-                    key={r.value}
-                    type="button"
-                    onClick={() => setForm(prev => ({ ...prev, role: r.value }))}
-                    className={`auth-role-card ${form.role === r.value ? 'auth-role-card--active' : ''}`}
-                  >
-                    {form.role === r.value && (
-                      <span className="auth-role-check"><Check size={12} /></span>
-                    )}
-                    <span className="auth-role-label">{r.label}</span>
-                    <span className="auth-role-desc">{r.desc}</span>
-                  </button>
-                ))}
-              </div>
+              {fieldErrors.email && (
+                <span className="auth-field-error">{fieldErrors.email}</span>
+              )}
             </div>
 
             <div className="auth-field">
@@ -172,7 +184,7 @@ export const SignupPage = () => {
                   placeholder="••••••••"
                   value={form.password}
                   onChange={handleChange}
-                  className="auth-input auth-input-padded"
+                  className={`auth-input auth-input-padded ${fieldErrors.password ? 'auth-input--error' : ''}`}
                 />
                 <button
                   type="button"
@@ -183,6 +195,9 @@ export const SignupPage = () => {
                   {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {fieldErrors.password && (
+                <span className="auth-field-error">{fieldErrors.password}</span>
+              )}
               {form.password && (
                 <div className="auth-strength">
                   <div className="auth-strength-bars">
@@ -190,7 +205,7 @@ export const SignupPage = () => {
                       <div
                         key={i}
                         className="auth-strength-bar"
-                        style={{ background: i <= strength ? strengthColor[strength] : '#e5e7eb' }}
+                        style={{ background: i <= strength ? strengthColor[strength] : 'rgba(59,130,246,0.15)' }}
                       />
                     ))}
                   </div>
@@ -229,7 +244,7 @@ export const SignupPage = () => {
 
           <p className="auth-switch">
             Already have an account?{' '}
-            <Link to="/login" className="auth-link">Sign in</Link>
+            <Link to="/login" className="auth-link">Login</Link>
           </p>
         </div>
       </div>

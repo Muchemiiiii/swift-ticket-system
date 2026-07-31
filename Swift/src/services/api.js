@@ -10,7 +10,7 @@ const isSupabaseConfigured = () => {
   return !!(url && key && key !== 'YOUR_SUPABASE_ANON_KEY_HERE' && key !== '');
 };
 
-// ─── Seed Data ───────────────────────────────────────────────────────────────
+// Seed data for fallback/localStorage mode
 const SEED_USERS = [
   { id: 'u1', name: 'Alice Johnson', email: 'alice@swift.com', password: 'password', role: 'user',    avatar: 'AJ' },
   { id: 'u2', name: 'Bob Martinez',  email: 'bob@swift.com',   password: 'password', role: 'support', avatar: 'BM' },
@@ -30,7 +30,7 @@ const SEED_KB = [
   { id: 'kb4', title: 'Requesting new hardware',         category: 'Hardware', views: 432,  content: 'Submit a ticket under the Hardware category…' },
 ];
 
-// ─── DB Init ─────────────────────────────────────────────────────────────────
+// ─── LocalStorage Init (fallback only) ───────────────────────────────────────
 const initDB = () => {
   if (!localStorage.getItem('swift_tickets')) {
     localStorage.setItem('swift_tickets', JSON.stringify(SEED_TICKETS));
@@ -39,7 +39,10 @@ const initDB = () => {
     localStorage.setItem('swift_users', JSON.stringify(SEED_USERS));
   }
 };
-initDB();
+
+if (!isSupabaseConfigured()) {
+  initDB();
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const getUsers   = () => JSON.parse(localStorage.getItem('swift_users')   || '[]');
@@ -47,8 +50,32 @@ const getTickets = () => JSON.parse(localStorage.getItem('swift_tickets') || '[]
 
 // ─── API ─────────────────────────────────────────────────────────────────────
 export const api = {
-  // Auth (Fallback endpoints kept for legacy/fallback support if needed)
+  // Auth
   login: async (email, password) => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        if (!data.user) throw new Error('Authentication failed.');
+
+        const { data: profile, error: profileErr } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
+        const user = (profile && !profileErr) ? profile : {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.user_metadata?.name || data.user.email.split('@')[0],
+          role: data.user.user_metadata?.role || 'user',
+          avatar: data.user.user_metadata?.avatar || 'U',
+        };
+        return user;
+      } catch (e) {
+        console.warn('Supabase login failed, falling back:', e);
+      }
+    }
     await delay(600);
     const users = getUsers();
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
@@ -58,6 +85,41 @@ export const api = {
   },
 
   signup: async ({ name, email, password, role = 'user' }) => {
+    if (isSupabaseConfigured()) {
+      try {
+        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name,
+              role,
+              avatar: initials,
+            },
+          },
+        });
+        if (error) throw error;
+        if (!data.user) throw new Error('Registration failed.');
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
+        const user = profile || {
+          id: data.user.id,
+          email: data.user.email,
+          name,
+          role,
+          avatar: initials,
+        };
+        return user;
+      } catch (e) {
+        console.warn('Supabase signup failed, falling back:', e);
+      }
+    }
     await delay(600);
     const users = getUsers();
     if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
