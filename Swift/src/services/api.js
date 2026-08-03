@@ -170,6 +170,7 @@ export const api = {
             category,
             priority,
             status,
+            trackingNumber:tracking_number,
             submittedBy:submitted_by,
             assignedTo:assigned_to,
             createdAt:created_at,
@@ -187,6 +188,7 @@ export const api = {
   },
 
   createTicket: async (ticketData) => {
+    const trackingNumber = ticketData.trackingNumber || `STS-${Math.random().toString(36).substring(2, 15).toUpperCase()}`;
     if (isSupabaseConfigured()) {
       try {
         const payload = {
@@ -194,6 +196,13 @@ export const api = {
           description: ticketData.description,
           category: ticketData.category,
           priority: ticketData.priority,
+          first_name: ticketData.firstName,
+          last_name: ticketData.lastName,
+          email: ticketData.email,
+          phone: ticketData.phone,
+          registration_number: ticketData.registrationNumber,
+          location: ticketData.location,
+          tracking_number: trackingNumber,
           submitted_by: ticketData.creatorId || ticketData.submittedBy,
           assigned_to: ticketData.assignedTo || null,
           resolution: ticketData.resolution || null
@@ -208,6 +217,7 @@ export const api = {
             category,
             priority,
             status,
+            trackingNumber:tracking_number,
             submittedBy:submitted_by,
             assignedTo:assigned_to,
             createdAt:created_at,
@@ -223,7 +233,7 @@ export const api = {
     await delay(400);
     const tickets = getTickets();
     const newTicket = {
-      id: `t${Date.now()}`,
+      id: trackingNumber,
       ...ticketData,
       status: 'open',
       assignedTo: null,
@@ -275,7 +285,7 @@ export const api = {
     return tickets[index];
   },
 
-  // Knowledge Base
+  // Resolution Details
   getKnowledgeBase: async () => {
     if (isSupabaseConfigured()) {
       try {
