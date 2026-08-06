@@ -6,8 +6,8 @@ const delay = (ms = 400) => new Promise(resolve => setTimeout(resolve, ms));
 // Helper to check if Supabase is fully configured in the environment
 const isSupabaseConfigured = () => {
   const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  return !!(url && key && key !== 'YOUR_SUPABASE_ANON_KEY_HERE' && key !== '');
+  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  return !!(url && key && key !== 'YOUR_SUPABASE_PUBLISHABLE_KEY_HERE' && key !== '');
 };
 
 // Seed data for fallback/localStorage mode
@@ -17,11 +17,7 @@ const SEED_USERS = [
   { id: 'u3', name: 'Carol White',   email: 'carol@swift.com', password: 'password', role: 'manager', avatar: 'CW' },
 ];
 
-const SEED_TICKETS = [
-  { id: 't1', title: 'VPN not connecting',           description: 'Cannot connect to VPN since this morning.',           category: 'Network',   priority: 'high',   status: 'open',       submittedBy: 'u1', assignedTo: 'u2', createdAt: new Date(Date.now() - 86400000 * 2).toISOString(), resolution: null },
-  { id: 't2', title: 'Outlook keeps crashing',       description: 'Outlook crashes every time I try to open an email.', category: 'Software',  priority: 'medium', status: 'in-progress', submittedBy: 'u1', assignedTo: 'u2', createdAt: new Date(Date.now() - 86400000 * 1).toISOString(), resolution: null },
-  { id: 't3', title: 'New laptop setup request',     description: 'Need a new laptop configured for the sales team.',   category: 'Hardware',  priority: 'low',    status: 'resolved',   submittedBy: 'u1', assignedTo: 'u2', createdAt: new Date(Date.now() - 86400000 * 5).toISOString(), resolution: 'Laptop ordered and configured.' },
-];
+const SEED_TICKETS = [];
 
 const SEED_KB = [
   { id: 'kb1', title: 'How to reset your password',      category: 'Account',  views: 1240, content: 'Go to the login page and click "Forgot password"…' },
@@ -174,7 +170,9 @@ export const api = {
             submittedBy:submitted_by,
             assignedTo:assigned_to,
             createdAt:created_at,
-            resolution
+            resolution,
+            technicianComments:technician_comments,
+            resolvedAt:resolved_at
           `)
           .order('created_at', { ascending: false });
         if (!error && data) return data;
@@ -205,7 +203,9 @@ export const api = {
           tracking_number: trackingNumber,
           submitted_by: ticketData.creatorId || ticketData.submittedBy,
           assigned_to: ticketData.assignedTo || null,
-          resolution: ticketData.resolution || null
+          resolution: ticketData.resolution || null,
+          technician_comments: ticketData.technicianComments || null,
+          resolved_at: ticketData.resolvedAt || null
         };
         const { data, error } = await supabase
           .from('tickets')
@@ -221,7 +221,9 @@ export const api = {
             submittedBy:submitted_by,
             assignedTo:assigned_to,
             createdAt:created_at,
-            resolution
+            resolution,
+            technicianComments:technician_comments,
+            resolvedAt:resolved_at
           `)
           .single();
         if (!error && data) return data;
@@ -252,6 +254,8 @@ export const api = {
         if (updates.status !== undefined) payload.status = updates.status;
         if (updates.assignedTo !== undefined) payload.assigned_to = updates.assignedTo;
         if (updates.resolution !== undefined) payload.resolution = updates.resolution;
+        if (updates.technicianComments !== undefined) payload.technician_comments = updates.technicianComments;
+        if (updates.resolvedAt !== undefined) payload.resolved_at = updates.resolvedAt;
 
         const { data, error } = await supabase
           .from('tickets')
@@ -267,7 +271,9 @@ export const api = {
             submittedBy:submitted_by,
             assignedTo:assigned_to,
             createdAt:created_at,
-            resolution
+            resolution,
+            technicianComments:technician_comments,
+            resolvedAt:resolved_at
           `)
           .single();
         if (!error && data) return data;

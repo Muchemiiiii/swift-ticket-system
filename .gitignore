@@ -1,0 +1,7 @@
+node_modules/
+dist/
+Admin/node_modules/
+Admin/dist/
+.env
+*.log
+.DS_Store

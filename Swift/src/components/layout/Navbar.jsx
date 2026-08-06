@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Ticket, FileText, BookOpen, Settings, Menu, X, Sun, Moon } from 'lucide-react';
+import { Ticket, FileText, BookOpen, Settings, Menu, X, Sun, Moon, LogOut, User } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 export const Navbar = () => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { dark, toggle } = useTheme();
+  const { currentUser, logout } = useAuth();
   const isActive = (path) => location.pathname === path;
 
   const navLinks = [
     { to: '/', label: 'Home', icon: <Ticket className="w-4 h-4" /> },
     { to: '/create', label: 'Report Issue', icon: <FileText className="w-4 h-4" /> },
     { to: '/status', label: 'Ticket Status', icon: <Settings className="w-4 h-4" /> },
-    { to: '/kb', label: 'Resolution Details', icon: <BookOpen className="w-4 h-4" /> },
+    { to: '/resolution', label: 'Resolution Details', icon: <BookOpen className="w-4 h-4" /> },
   ];
 
   return (
@@ -45,6 +47,21 @@ export const Navbar = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center gap-3">
+            {currentUser && (
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+                <User className="w-4 h-4" />
+                <span className="font-medium">{currentUser.name || currentUser.email}</span>
+              </div>
+            )}
+            {currentUser && (
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
+            )}
             <button
               onClick={toggle}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
@@ -87,6 +104,15 @@ export const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          {currentUser && (
+            <button
+              onClick={() => { logout(); setMobileOpen(false); }}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 w-full"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          )}
         </div>
       )}
     </nav>

@@ -55,7 +55,9 @@ create table if not exists public.tickets (
   submitted_by uuid references public.profiles(id) on delete cascade,
   assigned_to uuid references public.profiles(id) on delete set null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  resolution text
+  resolution text,
+  technician_comments text,
+  resolved_at timestamp with time zone
 );
 
 -- Enable Row Level Security
