@@ -12,7 +12,8 @@ import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 
 function ProtectedRoute({ children }) {
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
+  if (loading) return null;
   if (!currentUser) {
     return <Navigate to="/admin/login" replace />;
   }
@@ -20,7 +21,8 @@ function ProtectedRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
+  if (loading) return null;
   if (currentUser) {
     return <Navigate to="/admin/dashboard" replace />;
   }

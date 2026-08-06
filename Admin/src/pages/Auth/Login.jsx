@@ -30,22 +30,10 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const users = JSON.parse(localStorage.getItem('swift_users') || '[]');
-      const user = users.find(
-        (u) => u.email.toLowerCase() === form.email.toLowerCase() && u.password === form.password
-      );
-
-      if (!user) {
-        setError('Invalid email or password.');
-        setLoading(false);
-        return;
-      }
-
-      const { password: _, ...safeUser } = user;
-      login(safeUser);
+      await login(form.email, form.password);
       navigate('/admin/dashboard');
     } catch (err) {
-      setError('Unable to sign in. Please try again.');
+      setError(err.message || 'Invalid email or password.');
     } finally {
       setLoading(false);
     }

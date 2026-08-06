@@ -5,7 +5,7 @@ import { Ticket, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 import './auth.css';
 
 export default function Signup() {
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
@@ -40,38 +40,10 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      const users = JSON.parse(localStorage.getItem('swift_users') || '[]');
-
-      if (users.find((u) => u.email.toLowerCase() === form.email.toLowerCase())) {
-        setError('An account with this email already exists.');
-        setLoading(false);
-        return;
-      }
-
-      const initials = form.name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
-
-      const newUser = {
-        id: `u${Date.now()}`,
-        name: form.name,
-        email: form.email,
-        password: form.password,
-        role: 'admin',
-        avatar: initials,
-      };
-
-      users.push(newUser);
-      localStorage.setItem('swift_users', JSON.stringify(users));
-
-      const { password: _, ...safeUser } = newUser;
-      login(safeUser);
+      await signup(form.name, form.email, form.password);
       navigate('/admin/dashboard');
     } catch (err) {
-      setError('Unable to create account. Please try again.');
+      setError(err.message || 'Unable to create account. Please try again.');
     } finally {
       setLoading(false);
     }
