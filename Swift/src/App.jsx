@@ -5,8 +5,6 @@ import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/layout/Navbar';
 import { UserDashboard } from './pages/EndUser/Dashboard';
 import { CreateTicket } from './pages/EndUser/CreateTicket';
-import { TicketQueue } from './pages/ITSupport/TicketQueue';
-import { TicketStatus } from './pages/ITSupport/TicketStatus';
 import { Reports } from './pages/Manager/Reports';
 import { ArticleList } from './pages/KnowledgeBase/ArticleList';
 
@@ -21,8 +19,6 @@ function App() {
               <Routes>
                 <Route path="/" element={<UserDashboard />} />
                 <Route path="/create" element={<CreateTicket />} />
-                <Route path="/queue" element={<TicketQueue />} />
-                <Route path="/status" element={<TicketStatus />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/resolution" element={<ArticleList />} />
                 <Route path="*" element={<Navigate to="/" replace />} />

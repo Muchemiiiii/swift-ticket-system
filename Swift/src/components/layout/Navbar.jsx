@@ -14,7 +14,6 @@ export const Navbar = () => {
   const navLinks = [
     { to: '/', label: 'Home', icon: <Ticket className="w-4 h-4" /> },
     { to: '/create', label: 'Report Issue', icon: <FileText className="w-4 h-4" /> },
-    { to: '/status', label: 'Ticket Status', icon: <Settings className="w-4 h-4" /> },
     { to: '/resolution', label: 'Resolution Details', icon: <BookOpen className="w-4 h-4" /> },
   ];
 
