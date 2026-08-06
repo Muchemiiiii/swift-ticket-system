@@ -2,6 +2,8 @@ node_modules/
 dist/
 Admin/node_modules/
 Admin/dist/
+Swift/node_modules/
+Swift/dist/
 .env
 *.log
 .DS_Store
