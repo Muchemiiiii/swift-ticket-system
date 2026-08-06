@@ -66,6 +66,19 @@ export const AuthProvider = ({ children }) => {
     });
     if (error) throw error;
     if (!data.user) throw new Error('Registration failed.');
+
+    const { error: profileError } = await supabase.from('profiles').insert({
+      id: data.user.id,
+      name,
+      email,
+      role: 'admin',
+      avatar: initials,
+    });
+
+    if (profileError) {
+      console.warn('Profile insert failed:', profileError.message);
+    }
+
     return data.user;
   };
 
