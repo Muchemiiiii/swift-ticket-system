@@ -82,7 +82,7 @@ export const CreateTicket = () => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/track" className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+            <Link to="/status" className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
               Ticket Status Update
             </Link>
             <Button variant="secondary" onClick={() => { setSubmitted(false); setStep(1); }} className="w-full sm:w-auto">
