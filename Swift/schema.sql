@@ -93,11 +93,11 @@ create policy "Allow authenticated users to read tickets" on public.tickets
   to authenticated
   using (true);
 
--- Insert: owned-only (submitted_by must be the caller)
+-- Insert: allow anonymous submissions from the user app
 create policy "Allow users to insert tickets" on public.tickets
   for insert
-  to authenticated
-  with check (auth.uid() = submitted_by);
+  to anon, authenticated
+  with check (true);
 
 -- Update: Owned OR assigned
 -- USING limits which existing rows can be targeted;
