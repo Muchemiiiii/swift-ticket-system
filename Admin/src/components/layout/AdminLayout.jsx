@@ -4,11 +4,11 @@ import { Ticket, Shield, Home, BarChart3, Settings, Users, FileText, LogOut } fr
 import { useAuth } from '../../context/AuthContext';
 
 const ADMIN_NAV = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" />, end: true },
-  { to: '/admin/dashboard/tickets', label: 'Tickets', icon: <FileText className="w-4 h-4" /> },
-  { to: '/admin/dashboard/users', label: 'Users', icon: <Users className="w-4 h-4" /> },
-  { to: '/admin/dashboard/reports', label: 'Reports', icon: <BarChart3 className="w-4 h-4" /> },
-  { to: '/admin/dashboard/settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
+  { to: '/dashboard', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" />, end: true },
+  { to: '/dashboard/tickets', label: 'Tickets', icon: <FileText className="w-4 h-4" /> },
+  { to: '/dashboard/users', label: 'Users', icon: <Users className="w-4 h-4" /> },
+  { to: '/dashboard/reports', label: 'Reports', icon: <BarChart3 className="w-4 h-4" /> },
+  { to: '/dashboard/settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
 ];
 
 export const AdminLayout = () => {
@@ -22,7 +22,7 @@ export const AdminLayout = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.href = '/admin/login';
+    window.location.href = '/login';
   };
 
   return (

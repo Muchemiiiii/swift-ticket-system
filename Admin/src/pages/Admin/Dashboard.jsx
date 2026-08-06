@@ -98,7 +98,7 @@ export default function Dashboard() {
         <Card>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Tickets</h3>
-            <Link to="/admin/tickets" className="text-sm text-blue-600 hover:text-blue-700">View all</Link>
+            <Link to="/dashboard/tickets" className="text-sm text-blue-600 hover:text-blue-700">View all</Link>
           </div>
           <div className="space-y-3">
             {tickets.slice(0, 5).map(ticket => (
@@ -121,7 +121,7 @@ export default function Dashboard() {
         <Card>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">System Users</h3>
-            <Link to="/admin/users" className="text-sm text-blue-600 hover:text-blue-700">View all</Link>
+            <Link to="/dashboard/users" className="text-sm text-blue-600 hover:text-blue-700">View all</Link>
           </div>
           <div className="space-y-3">
             {users.slice(0, 5).map(user => (

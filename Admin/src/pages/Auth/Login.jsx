@@ -31,7 +31,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      navigate('/admin/dashboard');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Invalid email or password.');
     } finally {
@@ -122,7 +122,7 @@ export default function Login() {
 
           <p className="text-center text-gray-400 text-sm mt-6">
             Don't have an account?{' '}
-            <Link to="/admin/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
               Create account
             </Link>
           </p>

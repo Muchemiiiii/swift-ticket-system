@@ -15,7 +15,7 @@ function ProtectedRoute({ children }) {
   const { currentUser, loading } = useAuth();
   if (loading) return null;
   if (!currentUser) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
   return children;
 }
@@ -24,7 +24,7 @@ function PublicRoute({ children }) {
   const { currentUser, loading } = useAuth();
   if (loading) return null;
   if (currentUser) {
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
   return children;
 }
@@ -36,7 +36,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route
-              path="/admin/login"
+              path="/login"
               element={
                 <PublicRoute>
                   <Login />
@@ -44,7 +44,7 @@ export default function App() {
               }
             />
             <Route
-              path="/admin/signup"
+              path="/signup"
               element={
                 <PublicRoute>
                   <Signup />
@@ -52,7 +52,7 @@ export default function App() {
               }
             />
             <Route
-              path="/admin/dashboard"
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <AdminLayout />
@@ -65,8 +65,8 @@ export default function App() {
               <Route path="reports" element={<Reports />} />
               <Route path="settings" element={<Settings />} />
             </Route>
-            <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
-            <Route path="*" element={<Navigate to="/admin/login" replace />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

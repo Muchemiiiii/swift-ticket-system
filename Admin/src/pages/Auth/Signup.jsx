@@ -41,7 +41,7 @@ export default function Signup() {
     setLoading(true);
     try {
       await signup(form.name, form.email, form.password);
-      navigate('/admin/dashboard');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Unable to create account. Please try again.');
     } finally {
@@ -164,7 +164,7 @@ export default function Signup() {
 
           <p className="text-center text-gray-400 text-sm mt-6">
             Already have an account?{' '}
-            <Link to="/admin/login" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
               Sign in
             </Link>
           </p>
