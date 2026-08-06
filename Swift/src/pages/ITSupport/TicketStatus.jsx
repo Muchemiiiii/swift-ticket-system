@@ -159,9 +159,21 @@ export const TicketStatus = () => {
                           <span>Tracking: {ticket.trackingNumber || ticket.id}</span>
                           <span>Created: {new Date(ticket.createdAt).toLocaleDateString()}</span>
                         </div>
-                        {ticket.resolution && (
-                          <div className="mt-2 text-sm text-green-600 dark:text-green-400">
-                            Resolution: {ticket.resolution}
+                         {ticket.resolution && (
+                          <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                            <p className="text-xs text-green-600 dark:text-green-400 uppercase tracking-wider mb-1 font-medium">Resolution Message</p>
+                            <p className="text-sm text-green-800 dark:text-green-300">{ticket.resolution}</p>
+                            {ticket.technicianComments && (
+                              <>
+                                <p className="text-xs text-green-600 dark:text-green-400 uppercase tracking-wider mb-1 mt-2 font-medium">Technician's Comments</p>
+                                <p className="text-sm text-green-800 dark:text-green-300">{ticket.technicianComments}</p>
+                              </>
+                            )}
+                            {ticket.resolvedAt && (
+                              <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                                Resolved on {new Date(ticket.resolvedAt).toLocaleString()}
+                              </p>
+                            )}
                           </div>
                         )}
                       </div>
